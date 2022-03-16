@@ -135,7 +135,7 @@ export default Vue.extend({
 }
 .descripcion {
   text-align: left;
-  background-color: lightgray;
+  background-color: rgb(204, 241, 204);
   border-radius: 35px;
   padding: 20px
 }
@@ -144,5 +144,43 @@ export default Vue.extend({
   font-size: 35px;
   font-weight: 400;
 }
-.descvalor {}
+/* media queries:  (480px, 768px, 1024px, and 1280px) */
+
+@media (max-width: 1024px) {
+  .app {
+  margin: 0px;
+}
+.descripcion {
+  border-radius: 0px;
+  text-align: center;
+}
+
+}
+
+@media (max-width: 1280px) {
+
+
+.primeraSeccion {
+  flex-direction: column;  
+}
+.titulo {
+  margin-bottom: 30px;
+  width: auto;
+  font-size: 45px;
+  font-style: bolder;
+  text-align: center;
+  color: green;
+}
+
+}
+
+@media (min-width: 1024px) {
+
+.app {
+  margin: 0px 10.8vw;
+}
+} 
+
+
+
 </style>
