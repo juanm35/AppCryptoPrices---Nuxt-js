@@ -1,14 +1,12 @@
-<!-- Please remove this file from your project -->
 <template>
   <div class="app">
     <div class="primeraSeccion">
-      <div class="titulo">Precios de Cryptomonedas</div>
-      <select class="selector" name="MonedaSeleccionada2" id="" @change="onChange($event)">
-        <!-- @click="setearMoneda(item)" -->
+      <div class="titulo">Crypto Prices</div>
+      <select class="selector" name="MonedaSeleccionada2" id="coinSelector" @change="onChange($event)">
         <option
           :value="item"
-          v-for="(item, index) in ListaMonedas"
-          :key="item + index"
+          v-for="(item, index) in listaMonedas"
+          :key="`coin-${index}`"
           
         >
           {{ item }}
@@ -17,15 +15,11 @@
     </div>
     <div class="infoMoneda">
       <div>
-        {{
-          this.objMonedaSeleccionada.id
-            ? this.objMonedaSeleccionada.id.toUpperCase()
-            : "BITCOIN"
-        }}
+        {{tituloDeSeccionInfo}}
       </div>
       <img :src="objMonedaSeleccionada.image.large" alt="" />
       <div class="precios">
-        <div class="preciotitulo">Price:</div>
+        <div class="precioTitulo">Price:</div>
         <div class="preciovalor">
           {{
             this.objMonedaSeleccionada.market_data.current_price.usd.toLocaleString(
@@ -56,35 +50,32 @@ export default Vue.extend({
     return {
       Lista: [],
       precios: [],
-      ListaMonedas: [],
+      listaMonedas: [],
       MonedaSeleccionada: "bitcoin",
       objMonedaSeleccionada: {
         image: { large: null },
         description: { en: null },
         market_data: { current_price: { usd: 0 } },
       },
+      urlBase: "https://api.coingecko.com/api/v3/coins",
+      monedaDefaultEndpoint: "/bitcoin",
     };
   },
 
   async mounted() {
-    axios.get("https://api.coingecko.com/api/v3/coins/bitcoin").then((resp) => {
+
+    axios.get(`${this.urlBase}${this.monedaDefaultEndpoint}`).then((resp) => {
       this.objMonedaSeleccionada = resp.data;
-      //  console.log(this.precios);
     });
-    axios.get("https://api.coingecko.com/api/v3/coins").then((resp) => {
-      this.ListaMonedas = resp.data.map((moneda) => moneda.id);
-      console.log(this.ListaMonedas);
+    axios.get(this.urlBase).then((resp) => {
+      this.listaMonedas = resp.data.map((moneda) => moneda.id);
+      console.log(this.listaMonedas);
     });
   },
    methods: {
-  //   setearMoneda(item) {
-      
-  //     this.MonedaSeleccionada = item;
-  //     // console.log(this.MonedaSeleccionada);
-  //   },
     onChange(event) {
       axios
-        .get("https://api.coingecko.com/api/v3/coins/" + event.target.value)
+        .get(`${this.urlBase}/${event.target.value}`)
         .then((resp) => {
           this.objMonedaSeleccionada = resp.data;
           console.log(this.objMonedaSeleccionada);
@@ -92,17 +83,16 @@ export default Vue.extend({
             console.log(event.target.value)
         }
   },
-  //  watch: {
-  //    MonedaSeleccionada2: function (newVal) {
-  //      axios
-  //        .get("https://api.coingecko.com/api/v3/coins/" + newVal)
-  //        .then((resp) => {
-  //          this.objMonedaSeleccionada = resp.data;
-  //          console.log(this.objMonedaSeleccionada);
-  //        });
-  //    },
-    
-  //  },
+  computed: {
+    tituloDeSeccionInfo() {
+      return this.objMonedaSeleccionada.id
+            ? this.objMonedaSeleccionada.id.toUpperCase()
+            : "BITCOIN"
+    }
+
+  }
+
+
 });
 </script>
 
@@ -150,7 +140,7 @@ export default Vue.extend({
   margin: auto;
   font-size: 40px;
 }
-.preciotitulo {
+.precioTitulo {
   font-style: bolder;
   margin-right: 20px;
   margin-bottom: 50px;
